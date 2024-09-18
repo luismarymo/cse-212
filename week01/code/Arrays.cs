@@ -13,7 +13,15 @@ public static class Arrays
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
 
-        return []; // replace this return statement with your own
+        //The first step to solve this problem must be to create the array were the resulting multiples will be stored with a capacity of "lenght" so that it is able to store the amount of multiples requested, and then start a loop that will run as many times as "lenght". Every time the loop is run, the int "number" will be multiplied by "i" (which is initialized with a value of 1 and increases with every iteration) and the resulting multiple will be added to the array. once the loop is done, the array with multiples will be returned.  
+
+        var results = new double[length]; 
+        for (int i = 1; i <= length; i++){
+            double multiple = number * i;
+            results[i-1] = multiple; //i - 1 because of 0 based index. 
+        }
+
+        return results; // replace this return statement with your own
     }
 
     /// <summary>
@@ -29,5 +37,10 @@ public static class Arrays
         // Remember: Using comments in your program, write down your process for solving this problem
         // step by step before you write the code. The plan should be clear enough that it could
         // be implemented by another person.
+
+        // To solve this problem I will first create a list to store the numbers that will be rotating using .GetRange. To get the proper index from which to start the range I used .Count and deducted "amount". Then those same numbers will be removed from the original list using .RemoveRange and then inserted back in but at index 0 through .InsertRange. 
+        List<int> rotatingNumbers = data.GetRange(data.Count-amount, amount);
+        data.RemoveRange(data.Count-amount, amount);
+        data.InsertRange(0, rotatingNumbers);
     }
 }
