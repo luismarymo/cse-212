@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.VisualBasic;
 
 public static class SetsAndMaps
 {
@@ -22,7 +23,33 @@ public static class SetsAndMaps
     public static string[] FindPairs(string[] words)
     {
         // TODO Problem 1 - ADD YOUR CODE HERE
-        return [];
+        //store the list of words in a set
+        var wordsSet = new HashSet<string>(words);
+
+        //create a list to store the symmetric words
+        var symmetricList = new List<string>();
+
+        //iterate through the strings in the set
+        foreach (string word in wordsSet)
+        {
+            if (word[0] == word[1])
+            {
+                continue; //if the letters are the same, skip
+            }
+
+            //reverse the string to search for it in the set
+            string reversed = string.Join("", word[1], word[0]);
+            if (wordsSet.Contains(reversed))
+            {
+                //add to list of symmetric words and remove it from set
+                //to avoid duplicates
+                symmetricList.Add($"{string.Join(" & ", reversed, word)}");
+                wordsSet.Remove(reversed);
+            }
+        }
+
+        //return the list as array
+        return symmetricList.ToArray();
     }
 
     /// <summary>
@@ -43,6 +70,13 @@ public static class SetsAndMaps
         {
             var fields = line.Split(",");
             // TODO Problem 2 - ADD YOUR CODE HERE
+
+            if (degrees.ContainsKey(fields[3])) {
+                degrees[fields[3]]++;
+            }
+            else {
+                degrees[fields[3]] = 1;
+            }
         }
 
         return degrees;
@@ -67,7 +101,67 @@ public static class SetsAndMaps
     public static bool IsAnagram(string word1, string word2)
     {
         // TODO Problem 3 - ADD YOUR CODE HERE
-        return false;
+        //create dictionary to store the characters
+        //where the key is the character and the value
+        //a list with two ints, to count for how many times
+        //there's a certain letter in each word
+        var wordDict = new Dictionary<char,List<int>>();
+
+        // convert all letters in the string to lowercase
+        word1 = word1.ToLower();
+        word2 = word2.ToLower();
+
+        foreach (char letter in word1)
+        {
+            if (letter == ' ') 
+            {
+                continue; //ignore spaces
+            }
+
+            if (wordDict.ContainsKey(letter)) 
+            {
+                wordDict[letter][0]++; //letter has been seen before
+            }
+            else {
+                wordDict.Add(letter, [1]); //new letter, add to dictionary
+            }
+        }
+
+        foreach (char letter in word2)
+        {
+            if (letter == ' ')
+            {
+                continue; //ignore spaces
+            }
+
+            if (!wordDict.ContainsKey(letter))
+            {
+                //the character is not in the first word
+                //not an anagram
+                return false;
+            }
+
+            if (wordDict[letter].Count == 1)
+            {
+                //if there is only one item in the list of the char
+                //add an item to list to start counting for repetitions in word2
+                wordDict[letter].Add(1); 
+            }
+            else {
+                wordDict[letter][1]++; //letter has been seen before in word2
+            }
+        }
+
+        foreach (var letter in wordDict)
+        {
+            if (letter.Value[0] != letter.Value[1]) //check for how many of one letter is in both words
+            {
+                return false; //the amount of letters in one word is not the same, not an anagram
+            }
+        }
+
+        //all letters matched, so it is an anagram
+        return true;
     }
 
     /// <summary>
@@ -101,6 +195,16 @@ public static class SetsAndMaps
         // on those classes so that the call to Deserialize above works properly.
         // 2. Add code below to create a string out each place a earthquake has happened today and its magitude.
         // 3. Return an array of these string descriptions.
-        return [];
+
+        //list to store the strings with earthquake descriptions
+        var descriptions = new List<string>();
+
+        //loop through the features and add the string descriptions
+        foreach (var earthquake in featureCollection.Features) {
+            descriptions.Add($"{earthquake.Properties.Place} - Mag {earthquake.Properties.Mag}");
+        }
+
+        //return the list as an array
+        return descriptions.ToArray();
     }
 }
